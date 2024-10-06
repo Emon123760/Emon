@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Even Numbers</title>
+</head>
+<body>
+    <h1>Even Numbers Finder</h1>
+    <input type="text" id="numberInput" placeholder="Enter numbers separated by commas">
+    <button id="findEvenButton">Find Even Numbers</button>
+    <p id="result"></p>
+
+    <script>
+        function getEvenNumbers(arr) {
+            return arr.filter(num => num % 2 === 0);
+        }
+
+        document.getElementById("findEvenButton").addEventListener("click", function() {
+            // Get the user input
+            const userInput = document.getElementById("numberInput").value;
+            // Split the input into an array and convert to numbers
+            const numbers = userInput.split(',').map(num => Number(num.trim()));
+            // Get the even numbers
+            const evenNumbers = getEvenNumbers(numbers);
+            // Display the result on the webpage
+            document.getElementById("result").textContent = "Even Numbers: " + evenNumbers.join(", ");
+            // Output to console
+            console.log(evenNumbers);
+        });
+    </script>
+</body>
+</html>
+

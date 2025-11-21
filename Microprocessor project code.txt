@@ -1,0 +1,179 @@
+﻿org 100h
+
+
+.data
+msg1 db 0Dh,0Ah, 'Enter 1st input: $'
+msg2 db 0Dh,0Ah, 'Enter 2nd input: $'
+
+
+msg_add db 0Dh,0Ah, 'Addition = $'
+msg_sub db 0Dh,0Ah, 'Subtraction = $'
+msg_mul db 0Dh,0Ah, 'Multiplication = $'
+msg_div db 0Dh,0Ah, 'Division = $'
+msg_mod db 0Dh,0Ah, 'Mod (Remainder) = $'
+msg_sq1 db 0Dh,0Ah, 'Square of 1st = $'
+msg_cu1 db 0Dh,0Ah, 'Cube of 1st = $'
+msg_rt1 db 0Dh,0Ah, 'Square root of 1st = $'
+
+
+num1 db ?
+num2 db ?
+
+
+.code
+
+
+print_num proc
+    mov bl, 10
+    xor ah, ah
+    div bl
+
+
+    cmp al, 0
+    je only_units
+
+
+    mov dl, al
+    add dl, 30h
+    mov ah, 02h
+    int 21h
+
+
+only_units:
+    mov dl, ah
+    add dl, 30h
+    mov ah, 02h
+    int 21h
+    ret
+print_num endp
+
+
+start:
+
+
+    ; input first number
+    mov dx, offset msg1
+    mov ah, 09h
+    int 21h
+
+
+    mov ah, 01h
+    int 21h
+    sub al, 30h
+    mov num1, al
+
+
+    ; input second number
+    mov dx, offset msg2
+    mov ah, 09h
+    int 21h
+
+
+    mov ah, 01h
+    int 21h
+    sub al, 30h
+    mov num2, al
+
+
+    ; addition
+    mov dx, offset msg_add
+    mov ah, 09h
+    int 21h
+    mov al, num1
+    add al, num2
+    call print_num
+
+
+    ; subtraction
+    mov dx, offset msg_sub
+    mov ah, 09h
+    int 21h
+    mov al, num1
+    sub al, num2
+    call print_num
+
+
+    ; multiplication
+    mov dx, offset msg_mul
+    mov ah, 09h
+    int 21h
+    mov al, num1
+    mov bl, num2
+    mul bl
+    call print_num
+
+
+    ; division
+    mov dx, offset msg_div
+    mov ah, 09h
+    int 21h
+    mov al, num1
+    xor ah, ah
+    mov bl, num2
+    div bl
+    call print_num
+
+
+    ; MOD (remainder)
+    mov dx, offset msg_mod
+    mov ah, 09h
+    int 21h
+    mov al, num1
+    xor ah, ah
+    mov bl, num2
+    div bl
+    mov al, ah        ; remainder in AH
+    call print_num
+
+
+    ; square
+    mov dx, offset msg_sq1
+    mov ah, 09h
+    int 21h
+    mov al, num1
+    mov bl, num1
+    mul bl
+    call print_num
+
+
+    ; cube
+    mov dx, offset msg_cu1
+    mov ah, 09h
+    int 21h
+    mov al, num1
+    mov bl, num1
+    mul bl
+    mov bl, num1
+    mul bl
+    call print_num
+
+
+    ; square root approx
+    mov dx, offset msg_rt1
+    mov ah, 09h
+    int 21h
+
+
+    mov al, num1
+    mov bl, 1
+
+
+sqrt_loop:
+    mov cl, bl
+    mul cl
+    cmp al, num1
+    ja sqrt_done
+    inc bl
+    mov al, num1
+    jmp sqrt_loop
+
+
+sqrt_done:
+    dec bl
+    mov al, bl
+    call print_num
+
+
+    mov ah, 4Ch
+    int 21h
+end start
